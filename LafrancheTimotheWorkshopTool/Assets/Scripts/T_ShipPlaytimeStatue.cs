@@ -10,6 +10,7 @@ public class T_ShipPlaytimeStatue : MonoBehaviour
     public Vector2 shotDirection;
 
     public T_WeaponScriptable weapon;
+    public T_Weapon weapon2;
 
     private void Update()
     {

@@ -9,5 +9,5 @@ public class T_WeaponScriptable : ScriptableObject
     public Sprite lazerSprite;
 
     public float attackSpeed, lazerSpeed, damage, damageByDifficulty, zoneDamage, bonusByDifficulty, zoneRadius, burstDelay;
-    public int burstNumber, lazerByBurst, angularAngleBeetwenLazers;
+    public int burstNumber, lazerByBurst, angleBeetwenLazers;
 }

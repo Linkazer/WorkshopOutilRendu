@@ -11,7 +11,7 @@ public class T_WeaponScriptableEditor : Editor
     SerializedProperty lazerSpriteProperty;
     SerializedProperty attackSpeed, lazerSpeed, damage, bonusDamageByDifficulty;
     SerializedProperty zoneDamage, BonusByDifficulty, zoneRadius;
-    SerializedProperty burstNumber, burstDelay, lazerByBurst, angularAngleBeetwenLazers;
+    SerializedProperty burstNumber, burstDelay, lazerByBurst, angleBeetwenLazers;
 
     Sprite lazerSprite;
 
@@ -32,7 +32,7 @@ public class T_WeaponScriptableEditor : Editor
         burstDelay = serializedObject.FindProperty(nameof(T_WeaponScriptable.burstDelay));
         burstNumber = serializedObject.FindProperty(nameof(T_WeaponScriptable.burstNumber));
         lazerByBurst = serializedObject.FindProperty(nameof(T_WeaponScriptable.lazerByBurst));
-        angularAngleBeetwenLazers = serializedObject.FindProperty(nameof(T_WeaponScriptable.angularAngleBeetwenLazers));
+        angleBeetwenLazers = serializedObject.FindProperty(nameof(T_WeaponScriptable.angleBeetwenLazers));
 
         lazerSprite = (target as T_WeaponScriptable).lazerSprite;
     }
@@ -52,19 +52,21 @@ public class T_WeaponScriptableEditor : Editor
 
      public override void OnInspectorGUI()
      {
+        base.OnInspectorGUI();
 
-        //base.OnInspectorGUI();
-        
+        GUILayout.BeginVertical();
+
         float labelBaseWidth = EditorGUIUtility.labelWidth;
 
         var myLayout = new GUILayoutOption[] {
-      GUILayout.Height(lazerSprite.rect.height)
-};
-        //Rect nameRect = new Rect(EditorGUIUtility.currentViewWidth/10, 20, EditorGUIUtility.currentViewWidth/10*8, 25);
-        Rect nameRect = new Rect(10, 20, 100, 25);
+            GUILayout.Height(lazerSprite.rect.height)
+        };
+
+        Rect spriteRect = new Rect(20, 20, 0.9f * EditorGUIUtility.currentViewWidth, lazerSprite.rect.height);
 
         EditorGUILayout.PropertyField(lazerName);
 
+        //var style = new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter };
         GUILayout.BeginHorizontal();
         EditorGUILayout.PropertyField(lazerSpriteProperty, myLayout);
 
@@ -73,10 +75,19 @@ public class T_WeaponScriptableEditor : Editor
             lazerSprite = (target as T_WeaponScriptable).lazerSprite;
         }
         DrawOnGUISprite(lazerSprite);
+
         GUILayout.EndHorizontal();
 
+        //Comportement de base du Lazer
+        GUILayout.BeginHorizontal();
+
+        GUILayout.EndHorizontal();
+
+        //Dégâts de zone
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("Dégâts de zone", EditorStyles.boldLabel);
         EditorGUILayout.PropertyField(zoneDamage);
-        if (EditorGUILayout.Foldout((zoneDamage.floatValue>0), "Zone effect"))
+        if (zoneDamage.floatValue > 0)
         {
             EditorGUIUtility.labelWidth /= 2;
             GUILayout.BeginHorizontal();
@@ -86,9 +97,49 @@ public class T_WeaponScriptableEditor : Editor
             EditorGUIUtility.labelWidth = labelBaseWidth;
         }
 
+        //Tir en rafalle
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("Tir en rafale", EditorStyles.boldLabel);
+        EditorGUILayout.PropertyField(burstNumber);
+        if(burstNumber.intValue < 1)
+        {
+            burstNumber.intValue = 1;
+        }
+        if(burstNumber.intValue > 1)
+        {
+            EditorGUILayout.PropertyField(burstDelay);
+        }
+
+        //Multiples projectiles
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("Projectiles multiples", EditorStyles.boldLabel);
+        EditorGUILayout.PropertyField(lazerByBurst);
+        if (lazerByBurst.intValue < 1)
+        {
+            lazerByBurst.intValue = 1;
+        }
+        if (lazerByBurst.intValue > 1)
+        {
+            EditorGUILayout.PropertyField(angleBeetwenLazers);
+            if (angleBeetwenLazers.intValue < 5)
+            {
+                angleBeetwenLazers.intValue = 5;
+            }
+        }
+
+
+
         serializedObject.ApplyModifiedProperties();
 
-     }
+        if(GUILayout.Button("Show win"))
+        {
+            T_ShipVisualisationWindow.Create(target as T_WeaponScriptable, lazerSprite);
+        }
+
+        GUILayout.EndVertical();
+    }
+
+
 
     /*public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
