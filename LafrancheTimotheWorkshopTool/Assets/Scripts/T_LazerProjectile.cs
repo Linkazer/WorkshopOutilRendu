@@ -21,23 +21,24 @@ public class T_LazerProjectile : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void Initialise(T_WeaponScriptable newWeapon, T_ShipPlaytimeStatue shooter)
+    public void Initialise(T_WeaponScriptable newWeapon, T_ShipPlaytimeStatue shooter, Vector2 lazerDirection)
     {
         sprite.sprite = newWeapon.lazerSprite;
-        direction = shooter.shotDirection;
+        direction = lazerDirection;
         speed = newWeapon.lazerSpeed;
         transform.position = shooter.transform.position;
         isEnnemy = !shooter.isPlayer;
+        damage = newWeapon.damage;
 
         transform.up = direction;
         gameObject.SetActive(true);
     }
 
-    public void DestroyLazer(Vector3 position)
+    public void DestroyLazer()
     {
         direction = Vector3.zero;
         speed = 0;
-        transform.position = position;
+        transform.position = startPos;
         gameObject.SetActive(false);
     }
 
@@ -50,12 +51,14 @@ public class T_LazerProjectile : MonoBehaviour
     {
         if(collision.GetComponent<T_ShipPlaytimeStatue>()!=null)
         {
-            collision.GetComponent<T_ShipPlaytimeStatue>().TakeDamage(damage, isEnnemy);
-            DestroyLazer(startPos);
+            if (collision.GetComponent<T_ShipPlaytimeStatue>().TakeDamage(damage, isEnnemy))
+            {
+                DestroyLazer();
+            }
         }
         else if(collision.tag == "Obstacle" || collision.tag == "MapBorder")
         {
-            DestroyLazer(startPos);
+            DestroyLazer();
         }
     }
 }

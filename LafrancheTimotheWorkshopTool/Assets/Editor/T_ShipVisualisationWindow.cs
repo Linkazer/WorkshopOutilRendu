@@ -5,14 +5,16 @@ using UnityEngine;
 
 public class T_ShipVisualisationWindow : EditorWindow
 {
-    const int kPadding = 10;
-
     static Sprite shipSprite;
     static T_WeaponScriptable weapon;
 
     private List<float> projectileDistance = new List<float>();
 
-    private float timeAttack;
+    private float burstTime, attackTime=99;
+    private float speedMultipiler = 0.194f; //210 étant la taille de la fenêtre et 1080 la résolution de l'écran de jeu, j'ai 210/1080 = 0.194
+    private int currentBurst;
+    private float refreshTime = 0.001f;
+    private float lastRefresh;
 
     //[MenuItem("ComboMaker/Node window")]
     public static void Create(T_WeaponScriptable newWeap, Sprite newShip)
@@ -20,7 +22,7 @@ public class T_ShipVisualisationWindow : EditorWindow
         // Get existing open window or if none, make a new one:
         weapon = newWeap;
         shipSprite = newShip;
-        T_ShipVisualisationWindow window = (T_ShipVisualisationWindow)EditorWindow.GetWindow(typeof(T_ShipVisualisationWindow),false,weapon.nom);
+        T_ShipVisualisationWindow window = (T_ShipVisualisationWindow)GetWindow(typeof(T_ShipVisualisationWindow),false,weapon.nom);
         window.maxSize = new Vector2(210f, 210f);
         window.minSize = window.maxSize;
         window.Show();
@@ -28,41 +30,82 @@ public class T_ShipVisualisationWindow : EditorWindow
 
     public void OnGUI()
     {
+        refreshTime = (float)EditorApplication.timeSinceStartup - lastRefresh;
+        lastRefresh = (float)EditorApplication.timeSinceStartup;
+
         Vector2 spriteDef = new Vector2(60, 60);
-        DrawSprite(new Rect(100-spriteDef.x/2, 100-spriteDef.y/2, spriteDef.x, spriteDef.y), shipSprite);
+        DrawSprite(new Rect(100 - spriteDef.x / 2, 100 - spriteDef.y / 2, spriteDef.x, spriteDef.y), shipSprite);
         Handles.BeginGUI();
         Handles.color = Color.red;
 
         List<Vector3> coordList = ProjectileDirections(weapon.lazerByBurst, weapon.angleBeetwenLazers);
-        if(projectileDistance.Count != weapon.burstNumber)
+        if (projectileDistance.Count != weapon.burstNumber)
         {
-            projectileDistance = new List<float>();
-            for (int i = 0; i < weapon.burstNumber; i++)
-            {
-                projectileDistance.Add(0);
-            }
+            ResetBurst();
+        }
+
+        attackTime += refreshTime;
+        if (attackTime >= weapon.recoveryTime)
+        {
+            attackTime = 0;
+            ResetProjectileDistance();
+        }
+
+        burstTime += refreshTime;
+        if (burstTime >= weapon.burstDelay && currentBurst < weapon.burstNumber)
+        {
+            burstTime = 0;
+            currentBurst++;
         }
 
         for (int i = 0; i < weapon.lazerByBurst; i++)
         {
             Handles.color = Color.red;
-            Handles.DrawLine(new Vector3(100, 100), coordList[i]*-100+ new Vector3(100, 100));
+            Handles.DrawLine(new Vector3(100, 100), coordList[i] * -100 + new Vector3(100, 100));
             Handles.color = Color.yellow;
-            Handles.DrawSolidDisc(new Vector3(100, 100)+ coordList[i] * -100 * projectileDistance[0], Vector3.forward, 3);
+            for (int k = 0; k < currentBurst; k++)
+            {
+                Handles.DrawSolidDisc(new Vector3(100, 100) + coordList[i] * -100 * projectileDistance[k], Vector3.forward, 3);
+            }
         }
 
-        //timeAttack += Time.deltaTime;
-
-        projectileDistance[0] += 0.01f * weapon.lazerSpeed * Time.deltaTime;
-        if (projectileDistance[0] > 1)
+        //Debug.Log(currentBurst + "  >  " + projectileDistance.Count);
+        for (int k = 0; k < currentBurst; k++)
         {
-            projectileDistance[0] = 0;
+            if (projectileDistance[k] > 1)
+            {
+                projectileDistance[k] = -2;
+            }
+            else if (projectileDistance[k] >= 0)
+            {
+                projectileDistance[k] += refreshTime * weapon.lazerSpeed * speedMultipiler;
+                Debug.Log(speedMultipiler);
+            }
         }
-
         Handles.EndGUI();
-        Repaint();
     }
 
+    private void ResetBurst()
+    {
+        projectileDistance = new List<float>();
+        for (int i = 0; i < weapon.burstNumber; i++)
+        {
+            projectileDistance.Add(0);
+        }
+        currentBurst = 0;
+        burstTime = 0;
+    }
+
+    private void ResetProjectileDistance()
+    {
+        Debug.Log("New attack");
+        for(int i = 0; i < projectileDistance.Count; i++)
+        {
+            projectileDistance[i]=0;
+        }
+        currentBurst = 0;
+        burstTime = 0;
+    }
 
     private void DrawSprite(Rect position, Sprite sprite)
     {

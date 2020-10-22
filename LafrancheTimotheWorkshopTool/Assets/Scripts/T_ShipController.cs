@@ -5,9 +5,10 @@ using UnityEngine;
 public class T_ShipController : MonoBehaviour
 {
     //On the Scriptable
-    private float acceleration = 0.02f, maxSpeed = .2f;
+    private float acceleration = 0.02f, maxSpeed = .1f;
 
     //On the GO
+    [HideInInspector]
     public Vector2 shotDirection;
     private Vector3 moveDirection, inertieDirection, nextPosition;
     [SerializeField]
@@ -18,6 +19,10 @@ public class T_ShipController : MonoBehaviour
 
     public T_ShipPlaytimeStatue currentStatue;
 
+    private void Start()
+    {
+        GetComponent<SpriteRenderer>().sprite = currentStatue.baseShip.shipSprite;
+    }
 
     // Update is called once per frame
     void FixedUpdate()
@@ -55,5 +60,10 @@ public class T_ShipController : MonoBehaviour
         {
             currentStatue.TryToShoot();
         }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        inertieDirection /= 10;
     }
 }
