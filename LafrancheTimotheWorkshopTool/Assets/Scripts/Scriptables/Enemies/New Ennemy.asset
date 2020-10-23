@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: New Ennemy
   m_EditorClassIdentifier: 
   nom: 
-  shipSprite: {fileID: 21300000, guid: cdddcc357b9279a4fb9c3bab877081db, type: 3}
-  hitPoints: 0
-  weapon: {fileID: 11400000, guid: 8fbe943d49c56a242a883e5e46f80a84, type: 2}
-  speed: 1
-  scoreOnKill: 52
-  bonusScoreByDifficulty: 0
+  shipSprite: {fileID: 21300000, guid: ef7a9828e9dca71468562b64dbcbf507, type: 3}
+  hitPoints: 1
+  weapon: {fileID: 11400000, guid: ecc539a5f38611c42bf6651e4425b5d6, type: 2}
+  speed: 3
+  score: 35
+  difficultyScore: 5
   wayPoints:
-  - {x: 3, y: 3}
-  - {x: -2, y: 1}
-  - {x: 3, y: -4}
+  - {x: 0, y: 0}
+  - {x: -5.5412116, y: -0.1870861}
+  - {x: -10.817022, y: -3.178461}
+  - {x: -18.378685, y: -3.1528277}

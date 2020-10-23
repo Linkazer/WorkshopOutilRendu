@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class T_ActivableObject
 {
-    static Vector2 startPos = new Vector2(-12,12);
+    static Vector2 startPos = new Vector2(12,12);
 
     public static void DisableObject(GameObject toDisable)
     {

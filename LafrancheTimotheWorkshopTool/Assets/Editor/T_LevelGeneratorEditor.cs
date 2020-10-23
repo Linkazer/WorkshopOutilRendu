@@ -44,7 +44,7 @@ public class T_LevelGeneratorEditor : Editor
         {
             for (int i = 0; i < 10; i++)
             {
-                shootManager.AddEnemyObstaclesInScene();
+                shootManager.AddEnemyInScene();
             }
         }
 

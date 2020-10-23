@@ -12,5 +12,5 @@ public class T_EnnemyScriptable : ScriptableObject
     public float speed;
     public int score, difficultyScore;
 
-    public List<Vector2> wayPoints;
+    public List<Vector2> wayPoints = new List<Vector2>();
 }

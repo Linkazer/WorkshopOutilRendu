@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 7077421973489419211}
   - component: {fileID: 3449414070144574353}
   - component: {fileID: 7077421973489419222}
-  - component: {fileID: 7077421973489419223}
   m_Layer: 0
   m_Name: EnemyShip
   m_TagString: Untagged
@@ -98,10 +97,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79bec93d923fe1c438d03c598346fd28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 1
   isPlayer: 0
   shotDirection: {x: 0, y: 0}
-  weapon: {fileID: 11400000, guid: c87a0ae451d856d448877a6fc27c77e3, type: 2}
+  baseShip: {fileID: 0}
+  weapon: {fileID: 0}
+  healthBar: {fileID: 0}
 --- !u!114 &3449414070144574353
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114,8 +114,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b8baf857a3669d4c8881de2b1daca2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseStatue: {fileID: 11400000, guid: d0796ee93c269ac468d7d6ae085b053c, type: 2}
   playtimeStatue: {fileID: 7077421973489419211}
+  wayIndex: 0
+  localPos: {x: 0, y: 0, z: 0}
+  direction: {x: 0, y: 0, z: 0}
+  nextTarget: {x: 0, y: 0, z: 0}
 --- !u!61 &7077421973489419222
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -123,7 +126,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7077421973489419210}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1
@@ -140,26 +143,5 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.06, y: 0.8}
+  m_Size: {x: 1.2, y: 1}
   m_EdgeRadius: 0
---- !u!50 &7077421973489419223
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7077421973489419210}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0

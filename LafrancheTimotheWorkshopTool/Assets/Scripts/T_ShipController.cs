@@ -12,7 +12,7 @@ public class T_ShipController : MonoBehaviour
     public Vector2 shotDirection;
     private Vector3 moveDirection, inertieDirection, nextPosition;
     [SerializeField]
-    private Camera cam;
+    private Camera cam = default;
 
     private float currentInertieX, currentInertieY;
 
@@ -56,7 +56,7 @@ public class T_ShipController : MonoBehaviour
         shotDirection = (cam.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
         transform.up = shotDirection;
 
-        if(Input.GetMouseButtonDown(0))
+        if(Input.GetMouseButton(0))
         {
             currentStatue.TryToShoot();
         }
@@ -65,5 +65,6 @@ public class T_ShipController : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         inertieDirection /= 10;
+        currentStatue.TakeDamage(100, 0, true);
     }
 }

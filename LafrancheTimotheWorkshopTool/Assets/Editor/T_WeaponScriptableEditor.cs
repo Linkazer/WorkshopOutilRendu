@@ -128,7 +128,7 @@ public class T_WeaponScriptableEditor : Editor
 
         #region Gestion de la fenêtre
 
-        if (GUILayout.Button("Show win"))
+        if (GUILayout.Button("Previsualisation"))
         {
             T_ShipVisualisationWindow.Create(target as T_WeaponScriptable, lazerSprite);
             window = (T_ShipVisualisationWindow)EditorWindow.GetWindow(typeof(T_ShipVisualisationWindow));

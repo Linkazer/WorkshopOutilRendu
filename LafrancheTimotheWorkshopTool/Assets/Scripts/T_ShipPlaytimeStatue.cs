@@ -12,32 +12,38 @@ public class T_ShipPlaytimeStatue : MonoBehaviour
     public Vector2 shotDirection;
 
     public T_EnnemyScriptable baseShip;
+    [HideInInspector]
     public T_WeaponScriptable weapon;
 
     private float currentCooldown;
 
     [SerializeField]
-    private Image healthBar;
+    private Image healthBar = default;
 
     private void Start()
     {
+        ResetValue();
+    }
+
+    public void ResetValue()
+    {
         maxHealth = baseShip.hitPoints;
         health = maxHealth;
-        currentCooldown = weapon.recoveryTime;
+        weapon = baseShip.weapon;
+        currentCooldown = weapon.recoveryTime; 
     }
 
     private void Update()
     {
-        shotDirection = transform.up.normalized;
         currentCooldown += Time.deltaTime;
+        shotDirection = transform.up.normalized;
     }
 
-    public bool TakeDamage(float dmg, bool isEnnemy)
+    public bool TakeDamage(float dmg, float bonusDamage, bool isAlly)
     {
-        Debug.Log(dmg);
-        if(isEnnemy == isPlayer)
+        if(isAlly == isPlayer)
         {
-            health -= dmg;
+            health -= dmg + bonusDamage * T_ScoreManager.instance.currentDifficulty;
             if(health<=0)
             {
                 Die();
@@ -59,8 +65,8 @@ public class T_ShipPlaytimeStatue : MonoBehaviour
         }
         else
         {
-            Debug.Log(T_ScoreManager.instance);
-            T_ScoreManager.instance.AddScore(baseShip.score);
+            T_DialogueSimulation.instance.ShowMessage();
+            T_ScoreManager.instance.AddScore(baseShip.score,baseShip.difficultyScore);
             gameObject.SetActive(false);
         }
     }

@@ -81,12 +81,12 @@ public class T_LevelEditorWindow : EditorWindow
 
         for (int i = 0; i < currentLevel.levelContainer.Length; i++)
         {
-            Rect placementRect = new Rect(20 + (placementSpace + placementX) * (i % 18), 100 + (placementSpace + placementY) * (Mathf.RoundToInt(i / 18)), placementX, placementY);
+            Rect placementRect = new Rect(20 + (placementSpace + placementX) * (i % 18), 100 + (placementSpace + placementY) * (9-Mathf.RoundToInt(i / 18)), placementX, placementY);
 
             if (placementRect.Contains(currentEvt.mousePosition))
             {
                 EditorGUI.DrawRect(placementRect, currFeedbackColor);
-                if (currentEvt.type == EventType.MouseDown && currentEvt.button == 0)
+                if ((currentEvt.type == EventType.MouseDrag || currentEvt.type == EventType.MouseDown) && currentEvt.button == 0)
                 {
                     currentLevel.levelContainer[i] = currentObject;
                 }

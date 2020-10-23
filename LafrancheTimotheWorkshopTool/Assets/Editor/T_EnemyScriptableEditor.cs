@@ -18,7 +18,7 @@ public class T_EnemyScriptableEditor : Editor
 
     T_EnnemyScriptable shipScriptable;
 
-    Vector2 shipSpawnPosition = new Vector2(8.5f,0);
+    Vector2 shipSpawnPosition = new Vector2(8.5f,0), shipBasePosition = new Vector2(0, 0);
 
     private void OnEnable()
     {
@@ -42,7 +42,7 @@ public class T_EnemyScriptableEditor : Editor
         //base.OnInspectorGUI();
 
         float labelBaseWidth = EditorGUIUtility.labelWidth;
-
+        EditorGUIUtility.labelWidth /= 2;
         EditorGUILayout.PropertyField(shipName);
 
         #region Gestion du Sprite du vaisseau
@@ -69,6 +69,7 @@ public class T_EnemyScriptableEditor : Editor
             DrawOnGUISprite(shipRealSprite);
         }
         GUILayout.EndHorizontal();
+        EditorGUIUtility.labelWidth = labelBaseWidth;
         #endregion
 
         #region Comportement du vaisseau
@@ -108,16 +109,23 @@ public class T_EnemyScriptableEditor : Editor
         }
         #endregion
 
-        if(shipScriptable.wayPoints.Count <= 0 )
+        #region Ajout et retrait de Waypoint
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Add Waypoint"))
         {
             shipScriptable.wayPoints.Add(Vector2.zero);
-        }    
-        else if(shipScriptable.wayPoints[0] != Vector2.zero)
-        {
-            shipScriptable.wayPoints[0] = Vector2.zero;
         }
+        if (GUILayout.Button("Remove Waypoint"))
+        {
+            shipScriptable.wayPoints.RemoveAt(shipScriptable.wayPoints.Count - 1);
+        }
+        GUILayout.EndHorizontal();
 
-        //if(GUI.Button())
+        if (shipScriptable.wayPoints.Count <= 0)
+        {
+            shipScriptable.wayPoints.Add(Vector2.zero);
+        }
+        #endregion
 
         serializedObject.ApplyModifiedProperties();
     }
@@ -148,25 +156,32 @@ public class T_EnemyScriptableEditor : Editor
 
     void CustomOnSceneGUI(SceneView sceneview)
     {
-        Handles.BeginGUI();
-        EditorGUILayout.LabelField("Cékankonjou");
-        Handles.EndGUI();
-
         for (int i = 0; i < shipScriptable.wayPoints.Count; i++)
         {
             if(i==0)
             {
-                Handles.DrawSphere(0, shipSpawnPosition, Quaternion.identity, 1);
+                Handles.color = Color.yellow;
+                shipScriptable.wayPoints[i] = Handles.FreeMoveHandle(shipScriptable.wayPoints[i]+ shipBasePosition, Quaternion.identity, HandleUtility.GetHandleSize(shipBasePosition) * 0.5f, Vector3.one, Handles.CubeHandleCap) - (Vector3)shipBasePosition;
+                shipSpawnPosition = shipScriptable.wayPoints[0];
+                Handles.color = Color.white;
+                Handles.DrawLine(shipScriptable.wayPoints[i] + shipBasePosition, shipSpawnPosition + shipBasePosition + shipScriptable.wayPoints[(i + 1) % shipScriptable.wayPoints.Count]);
             }
             else
             {
-                shipScriptable.wayPoints[i] = Handles.FreeMoveHandle(shipScriptable.wayPoints[i] + shipSpawnPosition, Quaternion.identity, HandleUtility.GetHandleSize(shipSpawnPosition) * 0.5f, Vector3.one, Handles.CubeHandleCap) - (Vector3)shipSpawnPosition;
+                shipScriptable.wayPoints[i] = Handles.FreeMoveHandle(shipScriptable.wayPoints[i] + shipSpawnPosition + shipBasePosition, Quaternion.identity, HandleUtility.GetHandleSize(shipSpawnPosition + shipBasePosition) * 0.5f, Vector3.one, Handles.CubeHandleCap) - ((Vector3)shipSpawnPosition+(Vector3)shipBasePosition);
+                if ((i + 1) % shipScriptable.wayPoints.Count != 0)
+                {
+                    Handles.DrawLine(shipScriptable.wayPoints[i] + shipSpawnPosition + shipBasePosition, shipSpawnPosition + shipBasePosition + shipScriptable.wayPoints[(i + 1) % shipScriptable.wayPoints.Count]);
+                }
+                else
+                {
+                    Handles.DrawLine(shipScriptable.wayPoints[i] + shipSpawnPosition + shipBasePosition, shipBasePosition + shipScriptable.wayPoints[(i + 1) % shipScriptable.wayPoints.Count]);
+                }
             }
-            Handles.DrawLine(shipScriptable.wayPoints[i] + shipSpawnPosition, shipSpawnPosition + shipScriptable.wayPoints[(i + 1) % shipScriptable.wayPoints.Count]);
-            /*Handles.DrawLine(pos + trg.wayVectors[i], pos + trg.wayVectors[(i + 1) % trg.wayVectors.Count]);
-            trg.wayVectors[i] = Handles.FreeMoveHandle(trg.wayVectors[i] + pos, targTrans.rotation, HandleUtility.GetHandleSize(pos) * 0.5f, Vector3.one, Handles.CubeHandleCap) - pos;*/
         }
     }
+
+    
 
     void AddWayPoint()
     {

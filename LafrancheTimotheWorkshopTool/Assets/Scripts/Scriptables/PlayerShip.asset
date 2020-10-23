@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c437fb8c3583a214191cb48b76da2c68, type: 3}
+  m_Name: PlayerShip
+  m_EditorClassIdentifier: 
+  nom: 
+  shipSprite: {fileID: 21300000, guid: 9f4063326675fcc48a088ef8e08965a8, type: 3}
+  hitPoints: 10
+  weapon: {fileID: 11400000, guid: 0f8f653cd062e1542b0f87f40d4c0341, type: 2}
+  speed: 0
+  score: 0
+  difficultyScore: 0
+  wayPoints:
+  - {x: 0, y: 0}

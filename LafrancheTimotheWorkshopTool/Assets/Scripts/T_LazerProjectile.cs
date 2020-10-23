@@ -8,12 +8,12 @@ public class T_LazerProjectile : MonoBehaviour
     private float speed;
 
     private bool isEnnemy;
-    private float damage;
+    private float damage, bonusDamage;
 
     private Vector3 startPos;
 
     [SerializeField]
-    private SpriteRenderer sprite;
+    private SpriteRenderer sprite = default;
 
     private void Start()
     {
@@ -29,6 +29,7 @@ public class T_LazerProjectile : MonoBehaviour
         transform.position = shooter.transform.position;
         isEnnemy = !shooter.isPlayer;
         damage = newWeapon.damage;
+        bonusDamage = newWeapon.damageByDifficulty;
 
         transform.up = direction;
         gameObject.SetActive(true);
@@ -45,13 +46,18 @@ public class T_LazerProjectile : MonoBehaviour
     private void FixedUpdate()
     {
         transform.position += direction * speed * Time.fixedDeltaTime;
+
+        if(transform.position.x < -8.6f || transform.position.x > 8.6f || transform.position.y < -4.6f || transform.position.y > 4.6f)
+        {
+            DestroyLazer();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.GetComponent<T_ShipPlaytimeStatue>()!=null)
         {
-            if (collision.GetComponent<T_ShipPlaytimeStatue>().TakeDamage(damage, isEnnemy))
+            if (collision.GetComponent<T_ShipPlaytimeStatue>().TakeDamage(damage, bonusDamage, isEnnemy))
             {
                 DestroyLazer();
             }
